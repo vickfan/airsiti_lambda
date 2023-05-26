@@ -1,0 +1,22 @@
+{
+  "name": "airsiti_cron_starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "aws-recreate-repo": "aws ecr create-repository --repository-name airsiti_cron_starter --image-scanning-configuration --profile airsiti scanOnPush=true",
+    "docker-build": "docker build -t airsiti_cron_starter:$TAG .",
+    "aws-ecr-image-tag": "docker tag airsiti_cron_starter:$TAG 449872283144.dkr.ecr.ap-southeast-1.amazonaws.com/airsiti_cron_starter:$TAG",
+    "aws-ecr-login": "aws ecr get-login-password --region ap-southeast-1 --profile ${PROFILE:-airsiti} | docker login --username AWS --password-stdin 449872283144.dkr.ecr.ap-southeast-1.amazonaws.com",
+    "aws-ecr-push": "docker push 449872283144.dkr.ecr.ap-southeast-1.amazonaws.com/airsiti_cron_starter:$TAG",
+    "build": "npm run docker-build && npm run aws-ecr-image-tag && npm run aws-ecr-login",
+    "push": "npm run build && npm run aws-ecr-push",
+    "start": "docker build -t airsiti_cron_starter . && docker run --rm -p 9000:8080 --env URL='http://host.docker.internal:3000/v1/tasks' --env CRONS_SECRET='CRONS_API_SECRET' --env CRONS_IV='CRONS_API_IV' --env JOB_KEY='UPDATE_PARKING_SLOT' --name airsiti_cron_starter airsiti_cron_starter"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.3.1"
+  }
+}
