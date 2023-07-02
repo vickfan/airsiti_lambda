@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/nodejs:16
+FROM public.ecr.aws/lambda/nodejs:18
 
 # Assumes your function is named "app.js", and there is a package.json file in the app directory
 COPY app.js package*.json ${LAMBDA_TASK_ROOT}
